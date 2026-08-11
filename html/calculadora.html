@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora — Luz Inteligente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: {
+        bg:'#070B14', card:'#101827', card2:'#111827', border:'#243044',
+        'txt-main':'#F8FAFC','txt-sec':'#94A3B8',
+        energy:'#FFD95A', info:'#38BDF8', success:'#22C55E', danger:'#EF4444'
+      }}}
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="min-h-screen bg-bg text-txt-main">
+  <div class="flex">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="hidden lg:flex flex-col w-64 min-h-screen bg-card border-r border-border p-4">
+      <a href="../index.html" class="flex items-center gap-2 px-2 py-3">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" stroke="#FFD95A" stroke-width="3" fill="none"/>
+          <path d="M36 10 L22 34 H32 L28 54 L44 28 H34 Z" fill="#FFD95A"/>
+        </svg>
+        <span class="font-bold">Luz<span class="text-energy">Inteligente</span></span>
+      </a>
+      <nav class="mt-6 space-y-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-txt-sec hover:bg-bg transition">📊 Dashboard</a>
+        <a href="calculadora.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-energy/10 text-energy">⚡ Calculadora</a>
+        <a href="historico.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-txt-sec hover:bg-bg transition">📅 Histórico</a>
+      </nav>
+      <div class="mt-auto border-t border-border pt-4">
+        <button id="btnLogout" class="w-full px-3 py-2 rounded-lg border border-border text-txt-sec hover:bg-danger hover:text-white hover:border-danger transition">🚪 Sair</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 min-w-0">
+      <header class="flex items-center justify-between p-4 lg:p-6 border-b border-border bg-card">
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold">Calculadora de consumo</h1>
+          <p class="text-sm text-txt-sec">Calcule o consumo dos seus equipamentos e salve no seu histórico.</p>
+        </div>
+        <button id="btnMenu" class="lg:hidden p-2 rounded-lg border border-border">☰</button>
+      </header>
+
+      <section class="p-4 lg:p-6 space-y-6">
+        <!-- Formulário -->
+        <div class="bg-card border border-border rounded-2xl p-6">
+          <h2 class="font-bold mb-4">Novo equipamento</h2>
+          <form id="formCalc" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Equipamento</label>
+              <input type="text" id="equip" required placeholder="Ex: Chuveiro"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Potência (W)</label>
+              <input type="number" id="power" required min="0" step="1" placeholder="1000"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Quantidade</label>
+              <input type="number" id="qty" required min="1" value="1"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Horas/dia</label>
+              <input type="number" id="hours" required min="0" max="24" step="0.5" placeholder="5"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Dias/mês</label>
+              <input type="number" id="days" required min="1" max="31" value="30"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block text-xs text-txt-sec mb-1">Tarifa (R$/kWh)</label>
+              <input type="number" id="rate" required min="0" step="0.01" value="0.90"
+                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none"/>
+            </div>
+            <div class="md:col-span-2 lg:col-span-3 flex gap-3">
+              <button type="submit" class="px-6 py-2.5 rounded-lg bg-energy text-bg font-semibold hover:brightness-110 transition">Calcular</button>
+              <button type="button" id="btnReset" class="px-6 py-2.5 rounded-lg border border-border text-txt-sec hover:bg-bg transition">Limpar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Resultados -->
+        <div id="results" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-card border border-border rounded-2xl p-5">
+            <div class="text-xs text-txt-sec">Consumo diário</div>
+            <div class="text-2xl font-bold text-energy"><span id="rDiario">0</span> <span class="text-sm text-txt-sec">kWh</span></div>
+          </div>
+          <div class="bg-card border border-border rounded-2xl p-5">
+            <div class="text-xs text-txt-sec">Consumo mensal</div>
+            <div class="text-2xl font-bold text-info"><span id="rMensal">0</span> <span class="text-sm text-txt-sec">kWh</span></div>
+          </div>
+          <div class="bg-card border border-border rounded-2xl p-5">
+            <div class="text-xs text-txt-sec">Custo diário</div>
+            <div class="text-2xl font-bold">R$ <span id="rCustoDiario">0</span></div>
+          </div>
+          <div class="bg-card border border-border rounded-2xl p-5">
+            <div class="text-xs text-txt-sec">Custo mensal</div>
+            <div class="text-2xl font-bold text-success">R$ <span id="rCustoMensal">0</span></div>
+          </div>
+          <div class="col-span-2 lg:col-span-4">
+            <button id="btnSalvar" class="w-full py-3 rounded-lg bg-success text-bg font-bold hover:brightness-110 transition">💾 Salvar cálculo</button>
+            <div id="msgSave" class="mt-2 text-sm hidden"></div>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="bg-card border border-border rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold">Equipamentos cadastrados</h2>
+            <div id="totalInfo" class="text-sm text-txt-sec"></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="text-xs text-txt-sec border-b border-border">
+                <tr class="text-left">
+                  <th class="py-2">Equipamento</th>
+                  <th>Potência</th>
+                  <th>Qtd</th>
+                  <th>h/dia</th>
+                  <th>kWh/mês</th>
+                  <th>R$/mês</th>
+                  <th class="text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="7" class="py-4 text-center text-txt-sec">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/supabase.js"></script>
+  <script src="../js/calculadora.js"></script>
+</body>
+</html>
