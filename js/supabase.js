@@ -8,16 +8,16 @@ const supabaseClient = window.supabase.createClient(
 
 async function getAuthUser() {
   const {
-    data: { user },
+    data: { session },
     error
-  } = await supabaseClient.auth.getUser();
+  } = await supabaseClient.auth.getSession();
 
   if (error) {
-    console.error("Erro ao buscar usuário:", error);
+    console.error("Erro ao verificar sessão:", error);
     return null;
   }
 
-  return user;
+  return session?.user || null;
 }
 
 async function requireAuth(redirectUrl = "login.html") {
