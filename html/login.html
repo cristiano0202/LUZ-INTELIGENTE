@@ -170,11 +170,91 @@
       showMsg('Login realizado com sucesso!', 'success');
       setTimeout(() => window.location.href = 'dashboard.html', 600);
     });
- script src="../js/supabase.js"></script>
-  <script>
-    // ← todo o código do cadastro está aqui dentro!
-    const form = document.getElementById('formCadastro');
-    ...
-  </script>
+ <script src="../js/supabase.js"></script>
+
+<script>
+  // Se já estiver logado, leva direto ao dashboard
+  (async () => {
+    const user = await getAuthUser();
+
+    if (user) {
+      window.location.href = 'dashboard.html';
+    }
+  })();
+
+  const form = document.getElementById('formLogin');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btnSubmit');
+  const btnText = document.getElementById('btnText');
+  const btnLoader = document.getElementById('btnLoader');
+
+  function showMsg(text, type) {
+    msg.textContent = text;
+
+    msg.classList.remove(
+      'hidden',
+      'bg-danger/20',
+      'text-danger',
+      'bg-success/20',
+      'text-success',
+      'bg-info/20',
+      'text-info'
+    );
+
+    if (type === 'error') {
+      msg.classList.add('bg-danger/20', 'text-danger');
+    } else if (type === 'success') {
+      msg.classList.add('bg-success/20', 'text-success');
+    } else {
+      msg.classList.add('bg-info/20', 'text-info');
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    btn.disabled = true;
+    btnText.textContent = 'Entrando...';
+    btnLoader.classList.remove('hidden');
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          showMsg('E-mail ou senha inválidos.', 'error');
+        } else if (error.message.includes('Email not confirmed')) {
+          showMsg('Confirme seu e-mail antes de entrar.', 'error');
+        } else {
+          showMsg('Erro: ' + error.message, 'error');
+        }
+
+        return;
+      }
+
+      showMsg('Login realizado com sucesso!', 'success');
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 600);
+
+    } catch (erro) {
+      console.error(erro);
+      showMsg('Não foi possível conectar ao servidor.', 'error');
+
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = 'Entrar';
+      btnLoader.classList.add('hidden');
+    }
+  });
+</script>
+
 </body>
 </html>
