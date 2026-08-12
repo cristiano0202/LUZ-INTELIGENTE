@@ -1,220 +1,131 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Entrar — Luz Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Luz Inteligente</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: {
-        bg:'#070B14', card:'#101827', card2:'#111827', border:'#243044',
-        'txt-main':'#F8FAFC','txt-sec':'#94A3B8',
-        energy:'#FFD95A', info:'#38BDF8', success:'#22C55E', danger:'#EF4444'
-      }}}
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="min-h-screen bg-bg text-txt-main">
-  <div class="min-h-screen grid lg:grid-cols-2">
-    <!-- Lado esquerdo -->
-    <div class="hidden lg:flex flex-col justify-between p-12 border-r border-border bg-card">
-      <a href="../index.html" class="flex items-center gap-2">
-        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="30" stroke="#FFD95A" stroke-width="3" fill="none"/>
-          <path d="M36 10 L22 34 H32 L28 54 L44 28 H34 Z" fill="#FFD95A"/>
-        </svg>
-        <span class="text-2xl font-bold">Luz<span class="text-energy">Inteligente</span></span>
-      </a>
+
+<body class="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center p-4">
+  <main class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+    <h1 class="text-2xl font-bold text-center mb-2">Entrar</h1>
+    <p class="text-center text-gray-400 mb-8">Luz Inteligente</p>
+
+    <div
+      id="login-error"
+      class="hidden mb-4 rounded-lg border border-red-500 bg-red-500/10 p-3 text-red-400 text-sm"
+    ></div>
+
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-medium mb-1">
+          E-mail
+        </label>
+
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          class="w-full rounded-lg bg-gray-800 border border-gray-700 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          placeholder="seu@email.com"
+        />
+      </div>
 
       <div>
-        <h1 class="text-4xl font-bold mb-4">Painel inteligente</h1>
-        <p class="text-xl text-txt-sec mb-2">Entre para controlar seu consumo com precisão.</p>
-        <p class="text-txt-sec">Acesse seu painel, acompanhe seus cálculos salvos e veja onde a energia pesa mais no seu mês.</p>
+        <label for="password" class="block text-sm font-medium mb-1">
+          Senha
+        </label>
 
-        <div class="grid grid-cols-3 gap-4 mt-10">
-          <div class="bg-bg border border-border rounded-xl p-4">
-            <div class="text-energy text-2xl font-bold">kWh</div>
-            <div class="text-xs text-txt-sec mt-1">consumo monitorado</div>
-          </div>
-          <div class="bg-bg border border-border rounded-xl p-4">
-            <div class="text-info text-2xl font-bold">R$</div>
-            <div class="text-xs text-txt-sec mt-1">impacto mensal</div>
-          </div>
-          <div class="bg-bg border border-border rounded-xl p-4">
-            <div class="text-success text-2xl font-bold">API</div>
-            <div class="text-xs text-txt-sec mt-1">dados sincronizados</div>
-          </div>
-        </div>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          class="w-full rounded-lg bg-gray-800 border border-gray-700 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          placeholder="Sua senha"
+        />
       </div>
 
-      <div class="text-xs text-txt-sec">© 2026 Luz Inteligente</div>
-    </div>
+      <button
+        id="login-button"
+        type="submit"
+        class="w-full rounded-lg bg-emerald-600 hover:bg-emerald-500 px-4 py-2 font-semibold transition"
+      >
+        Entrar
+      </button>
+    </form>
 
-    <!-- Lado direito -->
-    <div class="flex items-center justify-center p-6 lg:p-12">
-      <div class="w-full max-w-md">
-        <a href="../index.html" class="lg:hidden flex items-center justify-center gap-2 mb-8">
-          <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="32" r="30" stroke="#FFD95A" stroke-width="3" fill="none"/>
-            <path d="M36 10 L22 34 H32 L28 54 L44 28 H34 Z" fill="#FFD95A"/>
-          </svg>
-          <span class="text-2xl font-bold">Luz<span class="text-energy">Inteligente</span></span>
-        </a>
+    <p class="mt-6 text-center text-sm text-gray-400">
+      Não tem conta?
+      <a
+        href="cadastro.html"
+        class="text-emerald-400 hover:text-emerald-300"
+      >
+        Criar conta
+      </a>
+    </p>
+  </main>
 
-        <div class="bg-card border border-border rounded-2xl p-8 shadow-xl">
-          <h1 class="text-2xl font-bold mb-2">Entrar</h1>
-          <p class="text-txt-sec text-sm mb-6">Use seu e-mail e senha para continuar no Luz Inteligente.</p>
-
-          <div id="msg" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
-
-          <form id="formLogin" class="space-y-4">
-            <div>
-              <label class="block text-xs text-txt-sec mb-1">E-mail</label>
-              <input type="email" id="email" required
-                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none focus:ring-2 focus:ring-energy/30 transition"/>
-            </div>
-            <div>
-              <label class="block text-xs text-txt-sec mb-1">Senha</label>
-              <input type="password" id="password" required minlength="6"
-                class="w-full px-4 py-2.5 rounded-lg bg-bg border border-border focus:border-energy focus:outline-none focus:ring-2 focus:ring-energy/30 transition"/>
-            </div>
-
-            <button type="submit" id="btnSubmit"
-              class="w-full py-3 rounded-lg bg-energy text-bg font-bold hover:brightness-110 transition flex items-center justify-center gap-2">
-              <span id="btnText">Entrar</span>
-              <svg id="btnLoader" class="hidden animate-spin h-5 w-5" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/>
-                <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/>
-              </svg>
-            </button>
-          </form>
-
-          <p class="text-center text-sm text-txt-sec mt-6">
-            Ainda não tem conta?
-            <a href="cadastro.html" class="text-energy hover:underline font-semibold">Criar cadastro</a>
-          </p>
-          <p class="text-center text-xs text-txt-sec mt-2">
-            <a href="../index.html" class="hover:text-energy">← Voltar ao início</a>
-          </p>
-
-          <!-- Visual decorativo -->
-          <div class="mt-6 p-4 bg-bg border border-border rounded-xl">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs text-txt-sec">Economia estimada</span>
-              <span class="text-success font-bold">+22%</span>
-            </div>
-            <div class="space-y-2">
-              <div class="h-2 bg-border rounded-full overflow-hidden">
-                <div class="h-full bg-energy rounded-full" style="width:78%"></div>
-              </div>
-              <div class="h-2 bg-border rounded-full overflow-hidden">
-                <div class="h-full bg-info rounded-full" style="width:55%"></div>
-              </div>
-              <div class="h-2 bg-border rounded-full overflow-hidden">
-                <div class="h-full bg-success rounded-full" style="width:92%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase.js"></script>
 
-<script>
-  // Se já estiver logado
-  (async () => {
-    const user = await getAuthUser();
+  <script>
+    async function initLogin() {
+      const errorEl = document.getElementById("login-error");
+      const button = document.getElementById("login-button");
+      const form = document.getElementById("login-form");
 
-    if (user) {
-      window.location.href = 'dashboard.html';
-    }
-  })();
+      function showError(message) {
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      }
 
-  const form = document.getElementById('formLogin');
-  const msg = document.getElementById('msg');
-  const btn = document.getElementById('btnSubmit');
-  const btnText = document.getElementById('btnText');
-  const btnLoader = document.getElementById('btnLoader');
+      function clearError() {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
 
-  function showMsg(text, type) {
-    msg.textContent = text;
+      // Se já existir sessão aberta, vai direto para o dashboard.
+      const { data, error: sessionError } =
+        await window.supabaseClient.auth.getSession();
 
-    msg.classList.remove(
-      'hidden',
-      'bg-danger/20',
-      'text-danger',
-      'bg-success/20',
-      'text-success',
-      'bg-info/20',
-      'text-info'
-    );
-
-    if (type === 'error') {
-      msg.classList.add('bg-danger/20', 'text-danger');
-    } else if (type === 'success') {
-      msg.classList.add('bg-success/20', 'text-success');
-    } else {
-      msg.classList.add('bg-info/20', 'text-info');
-    }
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-
-    btn.disabled = true;
-    btnText.textContent = 'Entrando...';
-    btnLoader.classList.remove('hidden');
-
-    try {
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
-
-      if (error) {
-        console.error("Erro de login:", error);
-
-        if (error.message.includes('Invalid login credentials')) {
-          showMsg('E-mail ou senha inválidos.', 'error');
-        } else {
-          showMsg('Erro: ' + error.message, 'error');
-        }
-
+      if (!sessionError && data.session) {
+        window.location.href = "dashboard.html";
         return;
       }
 
-      console.log("Login realizado:", data);
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        clearError();
 
-      showMsg('Login realizado com sucesso!', 'success');
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 600);
+        button.disabled = true;
+        button.textContent = "Entrando...";
 
-    } catch (erro) {
-      console.error('Falha no login:', erro);
+        const { error } =
+          await window.supabaseClient.auth.signInWithPassword({
+            email,
+            password,
+          });
 
-      showMsg(
-        'Não foi possível conectar ao servidor.',
-        'error'
-      );
+        button.disabled = false;
+        button.textContent = "Entrar";
 
-    } finally {
-      btn.disabled = false;
-      btnText.textContent = 'Entrar';
-      btnLoader.classList.add('hidden');
+        if (error) {
+          showError(error.message || "Não foi possível entrar.");
+          return;
+        }
+
+        window.location.href = "dashboard.html";
+      });
     }
-  });
-</script>
 
+    initLogin();
+  </script>
 </body>
 </html>
