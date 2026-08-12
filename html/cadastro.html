@@ -122,29 +122,62 @@
       btnText.textContent = 'Criando conta...';
       btnLoader.classList.remove('hidden');
 
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: name } }
-      });
-
-      btn.disabled = false;
-      btnText.textContent = 'Criar conta';
-      btnLoader.classList.add('hidden');
-
-      if (error) {
-        if (error.message.includes('already registered')) {
-          return showMsg('Este e-mail já está cadastrado.', 'error');
-        }
-        return showMsg('Erro: ' + error.message, 'error');
+     try {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name
       }
+    }
+  });
 
-      if (data.session) {
-        showMsg('Conta criada! Redirecionando...', 'success');
-        setTimeout(() => window.location.href = 'dashboard.html', 800);
-      } else {
-        showMsg('Conta criada! Verifique seu e-mail para confirmar o cadastro.', 'success');
-        setTimeout(() => window.location.href = 'login.html', 2500);
+  if (error) {
+    console.error('Erro Supabase:', error);
+
+    if (error.message.includes('already registered')) {
+      showMsg('Este e-mail já está cadastrado.', 'error');
+    } else {
+      showMsg('Erro: ' + error.message, 'error');
+    }
+
+    return;
+  }
+
+  console.log('Cadastro realizado:', data);
+
+  if (data.session) {
+    showMsg('Conta criada! Redirecionando...', 'success');
+
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 800);
+
+  } else {
+    showMsg(
+      'Conta criada! Verifique seu e-mail para confirmar o cadastro.',
+      'success'
+    );
+
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 2500);
+  }
+
+} catch (erro) {
+  console.error('Falha de conexão:', erro);
+
+  showMsg(
+    'Não foi possível conectar ao Supabase. Veja o Console do navegador.',
+    'error'
+  );
+
+} finally {
+  btn.disabled = false;
+  btnText.textContent = 'Criar conta';
+  btnLoader.classList.add('hidden');
+}
       }
     });
   </script>
