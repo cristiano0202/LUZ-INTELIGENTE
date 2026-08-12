@@ -6,8 +6,8 @@
   // Dashboard > Settings > API
   // ==========================================================
 
-  const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
-const SUPABASE_KEY = "sb_publishable_SUA_CHAVE";
+  const SUPABASE_URL = "https://abcdefgh.supabase.co";          // ← sua URL
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6..."; // ← sua ANON KEY
 
   if (SUPABASE_URL.includes("SEU-PROJETO") || SUPABASE_ANON_KEY.includes("SUA_ANON_KEY")) {
     console.warn("⚠️ Configure SUPABASE_URL e SUPABASE_ANON_KEY em js/supabase.js");
