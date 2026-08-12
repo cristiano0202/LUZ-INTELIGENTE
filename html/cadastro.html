@@ -123,7 +123,7 @@
       btnLoader.classList.remove('hidden');
 
      try {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
     options: {
