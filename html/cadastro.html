@@ -91,96 +91,122 @@
     </div>
   </div>
 
-  <script src="../js/supabase.js"></script>
-  <script>
-    const form = document.getElementById('formCadastro');
-    const msg = document.getElementById('msg');
-    const btn = document.getElementById('btnSubmit');
-    const btnText = document.getElementById('btnText');
-    const btnLoader = document.getElementById('btnLoader');
+ <script>
+  const form = document.getElementById('formCadastro');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btnSubmit');
+  const btnText = document.getElementById('btnText');
+  const btnLoader = document.getElementById('btnLoader');
 
-    function showMsg(text, type) {
-      msg.textContent = text;
-      msg.classList.remove('hidden', 'bg-danger/20', 'text-danger', 'bg-success/20', 'text-success', 'bg-info/20', 'text-info');
-      if (type === 'error') msg.classList.add('bg-danger/20', 'text-danger');
-      else if (type === 'success') msg.classList.add('bg-success/20', 'text-success');
-      else msg.classList.add('bg-info/20', 'text-info');
-    }
+  function showMsg(text, type) {
+    msg.textContent = text;
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const password2 = document.getElementById('password2').value;
-
-      if (!name || !email || !password) return showMsg('Preencha todos os campos.', 'error');
-      if (password.length < 6) return showMsg('A senha deve ter no mínimo 6 caracteres.', 'error');
-      if (password !== password2) return showMsg('As senhas não coincidem.', 'error');
-
-      btn.disabled = true;
-      btnText.textContent = 'Criando conta...';
-      btnLoader.classList.remove('hidden');
-
-     try {
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: name
-      }
-    }
-  });
-
-  if (error) {
-    console.error('Erro Supabase:', error);
-
-    if (error.message.includes('already registered')) {
-      showMsg('Este e-mail já está cadastrado.', 'error');
-    } else {
-      showMsg('Erro: ' + error.message, 'error');
-    }
-
-    return;
-  }
-
-  console.log('Cadastro realizado:', data);
-
-  if (data.session) {
-    showMsg('Conta criada! Redirecionando...', 'success');
-
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 800);
-
-  } else {
-    showMsg(
-      'Conta criada! Verifique seu e-mail para confirmar o cadastro.',
-      'success'
+    msg.classList.remove(
+      'hidden',
+      'bg-danger/20',
+      'text-danger',
+      'bg-success/20',
+      'text-success',
+      'bg-info/20',
+      'text-info'
     );
 
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 2500);
+    if (type === 'error') {
+      msg.classList.add('bg-danger/20', 'text-danger');
+    } else if (type === 'success') {
+      msg.classList.add('bg-success/20', 'text-success');
+    } else {
+      msg.classList.add('bg-info/20', 'text-info');
+    }
   }
 
-} catch (erro) {
-  console.error('Falha de conexão:', erro);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  showMsg(
-    'Não foi possível conectar ao Supabase. Veja o Console do navegador.',
-    'error'
-  );
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
 
-} finally {
-  btn.disabled = false;
-  btnText.textContent = 'Criar conta';
-  btnLoader.classList.add('hidden');
-}
+    if (!name || !email || !password || !password2) {
+      showMsg('Preencha todos os campos.', 'error');
+      return;
+    }
+
+    if (password.length < 6) {
+      showMsg('A senha deve ter no mínimo 6 caracteres.', 'error');
+      return;
+    }
+
+    if (password !== password2) {
+      showMsg('As senhas não coincidem.', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btnText.textContent = 'Criando conta...';
+    btnLoader.classList.remove('hidden');
+
+    try {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            full_name: name
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Erro no cadastro:', error);
+
+        if (
+          error.message.includes('already registered') ||
+          error.message.includes('already been registered')
+        ) {
+          showMsg('Este e-mail já está cadastrado.', 'error');
+        } else {
+          showMsg('Erro: ' + error.message, 'error');
+        }
+
+        return;
       }
-    });
-  </script>
-  
+
+      console.log('Cadastro realizado:', data);
+
+      if (data.session) {
+        showMsg('Conta criada! Redirecionando...', 'success');
+
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } else {
+        showMsg(
+          'Conta criada! Agora você pode fazer login.',
+          'success'
+        );
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+      }
+
+    } catch (erro) {
+      console.error('Falha no cadastro:', erro);
+
+      showMsg(
+        'Não foi possível conectar ao Supabase.',
+        'error'
+      );
+
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = 'Criar conta';
+      btnLoader.classList.add('hidden');
+    }
+  });
+</script>
+
 </body>
 </html>
