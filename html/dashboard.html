@@ -1,116 +1,109 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — Luz Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Luz Inteligente</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: {
-        bg:'#070B14', card:'#101827', card2:'#111827', border:'#243044',
-        'txt-main':'#F8FAFC','txt-sec':'#94A3B8',
-        energy:'#FFD95A', info:'#38BDF8', success:'#22C55E', danger:'#EF4444'
-      }}}
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen bg-bg text-txt-main">
-  <div class="flex">
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="hidden lg:flex flex-col w-64 min-h-screen bg-card border-r border-border p-4">
-      <a href="../index.html" class="flex items-center gap-2 px-2 py-3">
-        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="30" stroke="#FFD95A" stroke-width="3" fill="none"/>
-          <path d="M36 10 L22 34 H32 L28 54 L44 28 H34 Z" fill="#FFD95A"/>
-        </svg>
-        <span class="font-bold">Luz<span class="text-energy">Inteligente</span></span>
-      </a>
 
-      <nav class="mt-6 space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-energy/10 text-energy">
-          <span>📊</span><span>Dashboard</span>
-        </a>
-        <a href="calculadora.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-txt-sec hover:bg-bg transition">
-          <span>⚡</span><span>Calculadora</span>
-        </a>
-        <a href="historico.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-txt-sec hover:bg-bg transition">
-          <span>📅</span><span>Histórico</span>
-        </a>
-      </nav>
-
-      <div class="mt-auto border-t border-border pt-4">
-        <div class="px-3 py-2 text-sm">
-          <div id="userName" class="font-semibold truncate">Carregando...</div>
-          <div id="userEmail" class="text-xs text-txt-sec truncate"></div>
-        </div>
-        <button id="btnLogout" class="w-full mt-2 px-3 py-2 rounded-lg border border-border text-txt-sec hover:bg-danger hover:text-white hover:border-danger transition flex items-center justify-center gap-2">
-          <span>🚪</span><span>Sair</span>
-        </button>
+<body class="min-h-screen bg-gray-950 text-gray-100">
+  <header class="border-b border-gray-800 bg-gray-900">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold">Luz Inteligente</h1>
+        <p class="text-sm text-gray-400">Dashboard</p>
       </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="flex-1 min-w-0">
-      <header class="flex items-center justify-between p-4 lg:p-6 border-b border-border bg-card">
-        <div>
-          <h1 class="text-xl md:text-2xl font-bold">Olá, <span id="userNameHeader">...</span></h1>
-          <p class="text-sm text-txt-sec">Veja como está o seu consumo de energia.</p>
-        </div>
-        <button id="btnMenu" class="lg:hidden p-2 rounded-lg border border-border">☰</button>
-      </header>
+      <nav class="flex flex-wrap items-center gap-3 text-sm">
+        <a
+          href="dashboard.html"
+          class="rounded-lg bg-emerald-600 px-4 py-2 font-semibold"
+        >
+          Dashboard
+        </a>
 
-      <section class="p-4 lg:p-6 space-y-6">
-        <!-- Cards principais -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <div class="text-xs text-txt-sec mb-1">Consumo mensal</div>
-            <div id="cardKwh" class="text-3xl font-bold text-energy">— <span class="text-sm text-txt-sec">kWh</span></div>
-            <div class="text-xs text-success mt-2">▲ Total acumulado</div>
-          </div>
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <div class="text-xs text-txt-sec mb-1">Valor estimado</div>
-            <div id="cardCusto" class="text-3xl font-bold text-info">R$ —</div>
-            <div class="text-xs text-txt-sec mt-2">baseado na tarifa informada</div>
-          </div>
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <div class="text-xs text-txt-sec mb-1">Economia estimada</div>
-            <div id="cardEconomia" class="text-3xl font-bold text-success">R$ —</div>
-            <div class="text-xs text-txt-sec mt-2">≈ 20% do total</div>
-          </div>
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <div class="text-xs text-txt-sec mb-1">Cálculos realizados</div>
-            <div id="cardCount" class="text-3xl font-bold">—</div>
-            <div class="text-xs text-txt-sec mt-2">equipamentos cadastrados</div>
-          </div>
-        </div>
+        <a
+          href="calculadora.html"
+          class="rounded-lg border border-gray-700 px-4 py-2 hover:bg-gray-800"
+        >
+          Calculadora
+        </a>
 
-        <!-- Gráficos -->
-        <div class="grid lg:grid-cols-2 gap-6">
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <h3 class="font-bold mb-4">Consumo por equipamento</h3>
-            <div class="h-64"><canvas id="chartEquip"></canvas></div>
-          </div>
-          <div class="bg-card border border-border rounded-2xl p-5">
-            <h3 class="font-bold mb-4">Custo por equipamento</h3>
-            <div class="h-64"><canvas id="chartCusto"></canvas></div>
-          </div>
-        </div>
+        <a
+          href="historico.html"
+          class="rounded-lg border border-gray-700 px-4 py-2 hover:bg-gray-800"
+        >
+          Histórico
+        </a>
 
-        <!-- Top consumidores -->
-        <div class="bg-card border border-border rounded-2xl p-5">
-          <h3 class="font-bold mb-4">Equipamentos que mais consomem</h3>
-          <div id="topList" class="space-y-2 text-sm">
-            <div class="text-txt-sec">Carregando...</div>
-          </div>
-        </div>
+        <button
+          id="logout-button"
+          type="button"
+          class="rounded-lg border border-red-500 px-4 py-2 text-red-400 hover:bg-red-500/10"
+        >
+          Sair
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <section
+      id="dashboard-loading"
+      class="rounded-2xl border border-gray-800 bg-gray-900 p-6"
+    >
+      Carregando...
+    </section>
+
+    <section
+      id="dashboard-error"
+      class="hidden rounded-2xl border border-red-500 bg-red-500/10 p-6 text-red-400"
+    ></section>
+
+    <section id="dashboard-content" class="hidden space-y-6">
+      <section class="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+        <p class="text-sm text-gray-400">Usuário logado</p>
+
+        <h2
+          id="dashboard-user-name"
+          class="mt-1 text-2xl font-semibold"
+        >
+          Carregando usuário...
+        </h2>
+
+        <p
+          id="dashboard-email"
+          class="mt-1 text-sm text-gray-400"
+        ></p>
       </section>
-    </main>
-  </div>
 
+      <section class="grid gap-4 md:grid-cols-2">
+        <a
+          href="calculadora.html"
+          class="rounded-2xl border border-gray-800 bg-gray-900 p-6 transition hover:border-emerald-500"
+        >
+          <h3 class="text-lg font-semibold">Novo cálculo</h3>
+          <p class="mt-2 text-sm text-gray-400">
+            Calcule o consumo e o custo de equipamentos elétricos.
+          </p>
+        </a>
+
+        <a
+          href="historico.html"
+          class="rounded-2xl border border-gray-800 bg-gray-900 p-6 transition hover:border-emerald-500"
+        >
+          <h3 class="text-lg font-semibold">Histórico</h3>
+          <p class="mt-2 text-sm text-gray-400">
+            Veja, edite ou exclua seus cálculos salvos.
+          </p>
+        </a>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase.js"></script>
   <script src="../js/dashboard.js"></script>
 </body>
