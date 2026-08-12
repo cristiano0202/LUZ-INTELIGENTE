@@ -1,7 +1,7 @@
-const SUPABASE_URL = "https://hbdspdlvrhrmbfxzqtxr.supabase.co";
+const SUPABASE_URL = "https://hbdspdvlvrhrmbfxzqtxr.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_rRWHHgieZVoNFDgGoJoACQ_OyzNAN5y";
 
-const supabaseClient = window.supabase.createClient(
+window.supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
@@ -10,7 +10,7 @@ async function getAuthUser() {
   const {
     data: { session },
     error
-  } = await supabaseClient.auth.getSession();
+  } = await window.supabaseClient.auth.getSession();
 
   if (error) {
     console.error("Erro ao verificar sessão:", error);
@@ -31,6 +31,5 @@ async function requireAuth(redirectUrl = "login.html") {
   return user;
 }
 
-window.supabaseClient = supabaseClient;
 window.getAuthUser = getAuthUser;
 window.requireAuth = requireAuth;
